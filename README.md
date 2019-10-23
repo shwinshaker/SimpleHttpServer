@@ -8,6 +8,7 @@
 
 ## todo
 * report dependencies error when building, but doesn't affect execution
+* may pass the check sometimes for malware path
 
 ## Build
 ```
