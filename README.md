@@ -10,10 +10,20 @@
 * report dependencies error when building, but doesn't affect execution
 
 ## Build
+```
+make clean # if necessary
 make
+```
 
 ## Run server
+```
 ./httpd myconfig.ini
+```
 
 ## simple test using curl
+```
 curl -o test_img.jpg http://localhost:8080/kitten.jpg
+```
+```
+./TCPClient localhost 8080
+```
