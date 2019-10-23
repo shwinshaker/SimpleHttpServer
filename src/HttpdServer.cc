@@ -135,44 +135,6 @@ void HttpdServer::launch()
 
 	freeaddrinfo(servinfo);
 
-	/*
-	// TA's code
-
-	// 1. socket()
-	int sock = socket(AF_INET, SOCK_STREAM, 0);
-	// AF_INET: ipv4
-	// SOCK_STREAM: tcp sock schema
-	// 0: protocol
-
-	// if socket was created successfully, 
-	// socket() returns a non-negative number
-	if(sock < 0) {
-		log->error("Error: creating socket");
-		exit(EX_SOFTWARE);
-	}
-
-	// This is the old way to use bind, which is ipv4 specific
-	// in the new way should use getaddrinfo
-	// create a sockaddr_in struct
-	struct sockaddr_in server_address; // ipv4 only sock address
-	server_address.sin_family = AF_INET; // ipv4
-	server_address.sin_port = htons(stoi(PORT)); // port number // host to network short type
-	server_address.sin_addr.s_addr = htonl(INADDR_ANY); // should be inet_addr("0.0.0.0")
-	// 32-bit ip address // host to network long type
-	// INADDR_ANY // allow binding to any local ip address
-
-	// 2. bind() // bind socket descriptor to a port such that incoming packets are directed this socket
-	int b = ::bind(sock, (struct sockaddr*)&server_address,
-				   sizeof(server_address));
-
-	// if bind is successful it returns a 0, else 1
-	if(b < 0) {
-		log->error("Error: binding socket");
-		close(sock);
-		exit(EX_SOFTWARE);
-	}
-	*/
-
 	// print some info of host
 	char hostname[128];
 	gethostname(hostname, sizeof hostname);
@@ -264,6 +226,7 @@ void HttpdServer::launch()
 				string request = message.substr(0, delimiter+2);
 				// +2: include one \r\n to indicate the line
 				log->info("request: {}", request);
+
 				// if client wants to close connection after this request,
 				//// handle request and then close socket
 				if (request.find("Connection: close") != string::npos) {
@@ -274,17 +237,6 @@ void HttpdServer::launch()
 				}
 				// otherwise, handle the request normally
 				handle_request(request.c_str(), new_fd, false);
-
-				/*
-				if (isInitialLine(line)) {
-				    log->debug("child socket: handle get!");
-				    handle_get(line, new_fd);
-				}
-				if (isClosedLine(line)) {
-				    log->debug("child socket: handle closed!");
-				    handle_close(NULL, new_fd);
-				}
-				*/
 
 				// rest of the message
 				message = message.substr(delimiter+4);
@@ -308,14 +260,6 @@ void HttpdServer::launch()
 	}
 
 }
-
-/*
-bool isInitialLine(string line) {
-    // todo
-    return true;
-    return false;
-}
-*/
 
 void HttpdServer::handle_request(const char* buf, int client_sock, bool connection_close){
 
